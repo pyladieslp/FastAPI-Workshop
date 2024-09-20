@@ -6,6 +6,11 @@ from app.schemas import TextoCreate
 
 app = FastAPI()
 
+
+@app.get("/")
+def read_root():
+    return {"message": "¡Hola Mundo!"}
+
 Base.metadata.create_all(bind=engine)
 
 @app.post('/textos/', tags=['Textos'])
@@ -15,8 +20,3 @@ def create_textos(texto: TextoCreate):
     db.add(new_texto)
     db.commit()
     return JSONResponse(content={"message": "Se ha registrado con exito"})
-
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
