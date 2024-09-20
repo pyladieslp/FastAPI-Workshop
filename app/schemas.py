@@ -26,7 +26,7 @@ class TextoCreate(TextoBase):
 
 class Texto(TextoBase):
     id: int
-    categoria: Categoria
+    categoria: Optional[Categoria]
     
     class Config:
        # orm_mode =True
