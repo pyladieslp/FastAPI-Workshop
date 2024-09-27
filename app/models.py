@@ -12,6 +12,9 @@ class Texto(Base):
     contenido =Column(String)
     region = Column(String)
     categoria_id = Column(Integer, ForeignKey("categorias.id"))
+
+    # Nuevo campo para almacenar la ruta de la imagen
+    imagen_url = Column(String)
     
     # Relación muchos-a-uno: un texto pertenece a una categoría
     categoria = relationship("Categoria", back_populates="textos")

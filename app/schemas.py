@@ -26,6 +26,7 @@ class TextoCreate(TextoBase):
 
 class Texto(TextoBase):
     id: int
+    imagen_url: Optional[str]  # Añadimos este campo
     categoria: Optional[Categoria]
     
     class Config:

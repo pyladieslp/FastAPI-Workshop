@@ -7,29 +7,70 @@ from app import schemas
 from app import models
 from app.database import Session, engine, Base
 from app.models import Categoria, Texto
-from app.schemas import CategoriaCreate, TextoCreate
+from app.schemas import CategoriaCreate, TextoCreate, Texto as TextoSchema
 from fastapi.encoders import jsonable_encoder # type: ignore
 from sqlalchemy.orm import joinedload # type: ignore
+import os
+import uuid
+from fastapi import File, UploadFile, Form
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
+
+# Configurar la carpeta static para servir archivos estáticos
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 #Modificando Swagger
 app.title = "Mi aplicacion FastAPI"
 
 Base.metadata.create_all(bind=engine)
 
+# Función auxiliar para guardar la imagen
+def save_image(file: UploadFile) -> str:
+    file_name = f"{uuid.uuid4()}{os.path.splitext(file.filename)[1]}"
+    file_path = os.path.join("/app/static/images", file_name)
+    
+    with open(file_path, "wb") as buffer:
+        buffer.write(file.file.read())
+    
+    return f"/static/images/{file_name}"
+
 @app.post('/textos/', tags=['Textos'])
-def create_textos(texto: TextoCreate):
+async def create_textos(
+    titulo: str = Form(...),
+    autor: str = Form(...),
+    descripcion: str = Form(...),
+    contenido: str = Form(...),
+    region: str = Form(...),
+    categoria_id: int = Form(...),
+    imagen: UploadFile = File(...)
+):
+    # Guardar la imagen y obtener la URL
+    imagen_url = save_image(imagen)
+    
+    # Crear el objeto Texto
+    texto_data = {
+        "titulo": titulo,
+        "autor": autor,
+        "descripcion": descripcion,
+        "contenido": contenido,
+        "region": region,
+        "categoria_id": categoria_id,
+        "imagen_url": imagen_url
+    }
+    
     db = Session()
-    new_texto = Texto(**texto.model_dump())
+    new_texto = Texto(**texto_data)
     db.add(new_texto)
     db.commit()
-    return JSONResponse(content={"message": "Se ha registrado con exito"})
+    db.refresh(new_texto)
+    
+    return JSONResponse(content={"message": "Se ha registrado con éxito", "texto": jsonable_encoder(new_texto)})
 
 @app.get('/textos', tags=['Textos'] )
 def get_textos() -> List[schemas.Texto]:
     db = Session()
-    result = db.query(Texto).all()
+    result = db.query(Texto).options(joinedload(Texto.categoria)).all()
     return JSONResponse(status_code=200, content=jsonable_encoder(result))
 
 @app.get('/textos/{texto_id}', tags=['Textos'])

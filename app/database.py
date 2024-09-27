@@ -1,6 +1,7 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+# from sqlalchemy.ext.declarative import declarative_base
 
 sqlite_file_name= "database.sqlite"
 base_dir = os.path.dirname(os.path.realpath(__file__))
