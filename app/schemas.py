@@ -8,6 +8,7 @@ class TextoBase(BaseModel):
     contenido: str
     region: str
     categoria_id:int
+    # No incluimos imagen_url aquí porque se generará en el servidor
 
 class CategoriaBase(BaseModel):
     nombre:str
@@ -19,7 +20,7 @@ class CategoriaCreate(CategoriaBase):
 class Categoria(CategoriaBase):
     id: int
     class Config:
-        #Convierte instancias de SQLAlchemy a modelos Pydantic que se utilizan en respuestas de API
+        # Convierte instancias de SQLAlchemy a modelos Pydantic que se utilizan en respuestas de API
         from_attributes = True  
 class TextoCreate(TextoBase):
     pass

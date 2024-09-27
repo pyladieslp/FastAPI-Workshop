@@ -27,9 +27,11 @@ Base.metadata.create_all(bind=engine)
 
 # Función auxiliar para guardar la imagen
 def save_image(file: UploadFile) -> str:
+    # Generar un nombre único para el archivo
     file_name = f"{uuid.uuid4()}{os.path.splitext(file.filename)[1]}"
     file_path = os.path.join("/app/static/images", file_name)
     
+    # Guardar el archivo
     with open(file_path, "wb") as buffer:
         buffer.write(file.file.read())
     
@@ -67,6 +69,7 @@ async def create_textos(
     
     return JSONResponse(content={"message": "Se ha registrado con éxito", "texto": jsonable_encoder(new_texto)})
 
+# Modificar la función get_textos para incluir la URL de la imagen
 @app.get('/textos', tags=['Textos'] )
 def get_textos() -> List[schemas.Texto]:
     db = Session()
