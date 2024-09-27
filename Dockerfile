@@ -13,6 +13,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copia el código de la aplicación al contenedor
 COPY ./app /app/app
 
+# Crea el directorio para las imágenes estáticas
+RUN mkdir -p /app/static/images
+
 # Expone el puerto 8000 para la aplicación FastAPI
 EXPOSE 8000
 
