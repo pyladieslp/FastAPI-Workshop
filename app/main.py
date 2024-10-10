@@ -15,7 +15,18 @@ import uuid
 from fastapi import File, UploadFile, Form
 from fastapi.staticfiles import StaticFiles
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+# Configuración de CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite todas las origenes
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos los métodos
+    allow_headers=["*"],  # Permite todos los headers
+)
 
 # Configurar la carpeta static para servir archivos estáticos
 app.mount("/static", StaticFiles(directory="static"), name="static")
