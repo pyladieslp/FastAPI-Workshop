@@ -11,3 +11,6 @@ services:
       - ./static/images:/app/static/images
     environment:
       - PYTHONUNBUFFERED=1
+    command: >
+      sh -c "python -m app.scripts.bulk_insert && 
+             uvicorn app.main:app --host 0.0.0.0 --port 8000"

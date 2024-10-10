@@ -13,6 +13,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copia el código de la aplicación al contenedor
 COPY ./app /app/app
 
+# Copia los archivos JSON para la inserción masiva
+COPY ./app/scripts/*.json /app/app/scripts/
+
 # Crea el directorio para las imágenes estáticas
 RUN mkdir -p /app/static/images
 
